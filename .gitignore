@@ -11,3 +11,6 @@ wheels/
 
 # Environment variables — never commit real secrets
 .env
+
+# Claude Code local config (may contain API keys in MCP server env vars)
+.claude/

@@ -33,7 +33,7 @@ NOTION_HEADERS = {
 }
 
 
-# ── Step 1: Scrape ────────────────────────────────────────────────────────────
+#Scrape
 
 def scrape_article(url: str) -> dict:
     # Viriyah sets a cookie gate on first visit — warm up with homepage first
@@ -57,7 +57,7 @@ def scrape_article(url: str) -> dict:
     return {"url": url, "date": date, "title": title, "body": body}
 
 
-# ── Step 2: Analyze with Groq LLM ────────────────────────────────────────────
+#Analyze with Groq LLM
 
 def analyze_with_groq(article: dict) -> dict:
     llm = ChatGroq(model="llama-3.3-70b-versatile", api_key=GROQ_API_KEY)
@@ -86,7 +86,7 @@ Return only valid JSON. No extra text or markdown."""
     return json.loads(raw.strip())
 
 
-# ── Step 3: Save to Notion ────────────────────────────────────────────────────
+#Save to Notion 
 
 def _parse_date(raw: str | None) -> str | None:
     if not raw or raw == "N/A":

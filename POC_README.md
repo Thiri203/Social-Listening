@@ -227,24 +227,4 @@ uv run python scrape_to_notion.py
 - **Notion integration works** — Thai Buddhist Era (พ.ศ.) dates are auto-converted to CE ISO 8601 for Notion's date field.
 - **Full pipeline confirmed working** — `social_listening_pipeline.py` runs end-to-end: scrapes Viriyah article, gets LLM sentiment analysis from Groq, and saves the result to Notion in one command.
 
----
 
-## MCP / AI Tools Used
-
-| Tool | Purpose |
-|---|---|
-| Cursor | IDE with AI-assisted coding |
-| Claude Sonnet 4.6 | Code generation and debugging |
-| Gemini Flash Lite | Tested as LLM backend (not usable — blocked in Thailand) |
-| Groq (Llama 3.3 70B) | LLM analysis layer in full pipeline (free tier, works) |
-| Notion | Output destination — receives scraped article + AI analysis |
-
----
-
-## Next Steps
-
-- Expand to scrape the full news listing page (not just single articles)
-- Add scheduling to run pipeline periodically (cron / GitHub Actions)
-- Test Firecrawl on JavaScript-heavy Thai sources (Pantip, Facebook public pages)
-- Add more social listening sources (social media, news aggregators)
-- Evaluate MCP server approach — Firecrawl MCP + Notion MCP connected in Cursor

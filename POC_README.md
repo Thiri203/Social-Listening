@@ -118,15 +118,43 @@ Pipeline that combines BeautifulSoup scraping with the Notion API to push extrac
 
 ---
 
+### 5. Full Social Listening Pipeline (`social_listening_pipeline.py`)
+
+End-to-end pipeline combining all three steps: **Scrape → Analyze (LLM) → Store (Notion)**.
+
+**How it works:**
+1. Scrapes an article with BeautifulSoup (cookie-gate workaround included)
+2. Passes the article body to **Groq (Llama 3.3 70B)** via LangChain for AI analysis
+3. Groq returns structured JSON: sentiment, score, topics, summary, language
+4. Pushes the article + analysis result to Notion as a single page
+
+**Sample Groq analysis output:**
+```json
+{
+  "sentiment": "neutral",
+  "score": 0.0,
+  "topics": ["Viriyah Insurance", "V Group", "electric vehicles", "insurance industry", "business clarification"],
+  "summary": "The Viriyah Insurance company clarifies that it has no affiliation with the V Group and focuses solely on the insurance business.",
+  "language": "en"
+}
+```
+
+**Requires:** `GROQ_API_KEY` + `NOTION_TOKEN` + `NOTION_DATABASE_ID`
+
+---
+
 ## Project Structure
 
 ```
 Social-Listening/
-├── test_beautifulsoup.py     # BeautifulSoup scraper POC
-├── test_scrapegraphai.py     # ScrapeGraphAI + Groq LLM scraper POC
-├── scrape_to_notion.py       # BeautifulSoup → Notion pipeline
-├── .env.example              # Environment variable template
-├── pyproject.toml            # Python dependencies (uv)
+├── social_listening_pipeline.py        # Full pipeline: Scrape → Groq LLM → Notion ★
+├── test_beautifulsoup.py               # BeautifulSoup scraper POC
+├── test_firecrawl.py                   # Firecrawl scraper POC
+├── test_scrapegraphai.py               # ScrapeGraphAI + Groq LLM scraper POC
+├── scrape_to_notion.py                 # BeautifulSoup → Notion (no LLM analysis)
+├── .env.example                        # Environment variable template
+├── pyproject.toml                      # Python dependencies (uv)
+├── output_pipeline_sample.json         # Sample full pipeline output (with LLM analysis)
 ├── output_english_scrapegraphai.json   # Sample ScrapeGraphAI output (English)
 ├── output_scrapegraphai.json           # Sample ScrapeGraphAI output (Thai)
 └── output2_scrapegraphai.json          # Additional ScrapeGraphAI test run
@@ -159,13 +187,19 @@ NOTION_DATABASE_ID=  # Target Notion database ID
 ## Running the Scripts
 
 ```bash
-# BeautifulSoup scraper
+# Full pipeline: Scrape → Groq LLM analysis → Notion (recommended)
+uv run python social_listening_pipeline.py
+
+# BeautifulSoup scraper only
 uv run python test_beautifulsoup.py
+
+# Firecrawl scraper only
+uv run python test_firecrawl.py
 
 # ScrapeGraphAI + Groq
 uv run python test_scrapegraphai.py
 
-# Scrape and push to Notion
+# Scrape and push to Notion (no LLM analysis)
 uv run python scrape_to_notion.py
 ```
 
@@ -191,6 +225,7 @@ uv run python scrape_to_notion.py
 - **Gemini free tier is blocked in Thailand** — tested `langchain-google-genai` with Gemini Flash Lite but the free quota is 0 from Thailand. Switched to **Groq** (Llama 3.3 70B) which works.
 - **ScrapeGraphAI is the most flexible** for handling multiple sites without changing selectors, at the cost of speed.
 - **Notion integration works** — Thai Buddhist Era (พ.ศ.) dates are auto-converted to CE ISO 8601 for Notion's date field.
+- **Full pipeline confirmed working** — `social_listening_pipeline.py` runs end-to-end: scrapes Viriyah article, gets LLM sentiment analysis from Groq, and saves the result to Notion in one command.
 
 ---
 
@@ -201,14 +236,15 @@ uv run python scrape_to_notion.py
 | Cursor | IDE with AI-assisted coding |
 | Claude Sonnet 4.6 | Code generation and debugging |
 | Gemini Flash Lite | Tested as LLM backend (not usable — blocked in Thailand) |
-| Groq (Llama 3.3 70B) | LLM backend for ScrapeGraphAI (free tier, works) |
-| Notion | Output destination / note-taking database |
+| Groq (Llama 3.3 70B) | LLM analysis layer in full pipeline (free tier, works) |
+| Notion | Output destination — receives scraped article + AI analysis |
 
 ---
 
 ## Next Steps
 
 - Expand to scrape the full news listing page (not just single articles)
-- Add scheduling to run scrapers periodically (cron / GitHub Actions)
-- Evaluate Firecrawl for JavaScript-heavy pages
-- Consider adding more social listening sources (social media, news aggregators)
+- Add scheduling to run pipeline periodically (cron / GitHub Actions)
+- Test Firecrawl on JavaScript-heavy Thai sources (Pantip, Facebook public pages)
+- Add more social listening sources (social media, news aggregators)
+- Evaluate MCP server approach — Firecrawl MCP + Notion MCP connected in Cursor

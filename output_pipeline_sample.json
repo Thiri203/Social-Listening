@@ -1,0 +1,22 @@
+{
+  "article": {
+    "url": "https://www.viriyah.co.th/en/news/pr/66-37/",
+    "date": "28 Aug 2023",
+    "title": "The Viriyah Insurance states that it is unaffiliated to \"V Group\""
+  },
+  "analysis": {
+    "sentiment": "neutral",
+    "score": 0.0,
+    "topics": [
+      "Viriyah Insurance",
+      "V Group",
+      "electric vehicles",
+      "insurance industry",
+      "business clarification"
+    ],
+    "summary": "The Viriyah Insurance company clarifies that it has no affiliation with the V Group and focuses solely on the insurance business, with a significant presence in the electric vehicle insurance market.",
+    "language": "en"
+  },
+  "notion_url": "https://www.notion.so/The-Viriyah-Insurance-states-that-it-is-unaffiliated-to-V-Group-365bbc74bb498103a320c9c8d578c457",
+  "pipeline": "BeautifulSoup scrape → Groq Llama 3.3 70B analysis → Notion"
+}

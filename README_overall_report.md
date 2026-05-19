@@ -147,7 +147,7 @@ Extract the following fields and return as JSON:
 
 ---
 
-### Tool 4 — Notion Integration
+### Tool 4 — Notion Integration (`scrape_to_notion.py`)
 
 Pipeline combining BeautifulSoup scraping with the Notion API to push extracted articles into a Notion database.
 
@@ -156,6 +156,37 @@ Pipeline combining BeautifulSoup scraping with the Notion API to push extracted 
 **Result:** Successfully pushed scraped articles into Notion with title, date, source URL, and body. Thai date conversion works correctly.
 
 **Requires:** `NOTION_TOKEN` + `NOTION_DATABASE_ID`
+
+---
+
+### Tool 5 — Full Social Listening Pipeline (`social_listening_pipeline.py`) ★
+
+End-to-end pipeline combining all three stages into a single command.
+
+**Pipeline:**
+```
+BeautifulSoup (scrape) → Groq Llama 3.3 70B (LLM analysis) → Notion (store)
+```
+
+**Approach:**
+1. Scrapes article with BeautifulSoup (cookie-gate workaround)
+2. Passes article body to Groq via LangChain with a structured prompt
+3. Groq returns JSON: `sentiment`, `score`, `topics`, `summary`, `language`
+4. Pushes article + AI analysis together into a Notion database page
+
+**Result:** Confirmed working end-to-end. Sample run on Viriyah English article:
+
+```json
+{
+  "sentiment": "neutral",
+  "score": 0.0,
+  "topics": ["Viriyah Insurance", "V Group", "electric vehicles", "insurance industry", "business clarification"],
+  "summary": "The Viriyah Insurance company clarifies that it has no affiliation with the V Group and focuses solely on the insurance business.",
+  "language": "en"
+}
+```
+
+**Requires:** `GROQ_API_KEY` + `NOTION_TOKEN` + `NOTION_DATABASE_ID`
 
 ---
 
@@ -180,6 +211,7 @@ Pipeline combining BeautifulSoup scraping with the Notion API to push extracted 
 - **ScrapeGraphAI is the most flexible** for handling multiple sites without rewriting selectors, at the cost of speed.
 - **Notion integration works** including Thai Buddhist Era date conversion to CE ISO 8601.
 - **For Thai content** — LLM-based analysis (Groq/Claude) handles Thai text well without needing a separate Thai NLP pipeline.
+- **Full pipeline confirmed working** — `social_listening_pipeline.py` scrapes, analyzes, and stores in one command. Tested on Viriyah English news article.
 
 ---
 
@@ -187,6 +219,5 @@ Pipeline combining BeautifulSoup scraping with the Notion API to push extracted 
 
 - Expand scraper to collect the full news listing page, not just single articles
 - Test Firecrawl on JavaScript-heavy Thai sources (Pantip, Facebook public pages)
-- Add LLM sentiment analysis step — pass scraped body text to Groq or Claude, return structured sentiment JSON
-- Add scheduling (cron / Celery) to run scrapers periodically
-- Evaluate MCP-based approach — connect Firecrawl MCP + LLM agent via n8n workflow for a no-code pipeline alternative
+- Add scheduling (cron / GitHub Actions) to run pipeline periodically
+- Evaluate MCP server approach — Firecrawl MCP + Notion MCP connected inside Cursor as a no-code pipeline

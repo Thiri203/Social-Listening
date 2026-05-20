@@ -27,43 +27,6 @@ File: `mcp_gemini_notion.py`
 
 ---
 
-## Gemini API Integration
-
-Integrated using the same pattern as `kam-backend` (Vertex AI via service account):
-
-```python
-from google import genai
-from google.oauth2 import service_account
-
-_credentials = service_account.Credentials.from_service_account_info(
-    sa_info,
-    scopes=["https://www.googleapis.com/auth/cloud-platform"],
-)
-
-client = genai.Client(
-    vertexai=True,
-    project=GCP_PROJECT_ID,
-    location="us-central1",
-    credentials=_credentials,
-)
-
-response = client.models.generate_content(
-    model="gemini-2.5-flash",
-    contents=prompt,
-    config=types.GenerateContentConfig(
-        tools=[types.Tool(url_context=types.UrlContext())],
-    ),
-)
-```
-
-**Model used:** `gemini-2.5-flash`  
-**GCP Project:** `esg-report-469503`  
-**Auth:** Service account JSON (base64) from `GCP_SERVICE_ACCOUNT_JSON_BASE64`
-
-> Note: The backend uses `gemini-3-flash-preview` on project `445438248473`. That model is not enabled on the `esg-report` project. `gemini-2.5-flash` was selected from the available model list and confirmed working.
-
----
-
 ## Target Sites — Scraping Results
 
 ### 1. AXA Thailand — https://www.axa.co.th/en

@@ -146,14 +146,3 @@ uv run python mcp_gemini_notion.py
 uv run python mcp_beautifulsopu_gemini_notion.py
 ```
 
-Required `.env` variables:
-```
-GOOGLE_API_KEY=...
-GOOGLE_GENAI_USE_VERTEXAI=true
-GOOGLE_CLOUD_PROJECT=esg-report-469503
-GOOGLE_CLOUD_LOCATION=us-central1
-GCP_PROJECT_ID=esg-report-469503
-GCP_SERVICE_ACCOUNT_JSON_BASE64=...
-NOTION_TOKEN=...
-NOTION_DATABASE_ID=...
-```

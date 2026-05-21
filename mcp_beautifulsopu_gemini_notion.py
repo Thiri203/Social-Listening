@@ -248,9 +248,9 @@ def run_pipeline(url: str):
 
 if __name__ == "__main__":
     TARGET_SITES = [
-        "https://www.axa.co.th/en",
-        "https://www.thailife.com/?lang=en",
-        "https://www.aia.co.th/en/health-wellness/vitality",
+        "https://www.axa.co.th/en/support/about-axa-thailand",
+        "https://www.thailife.com/ThaiLifeInsuranceMedicare",
+        "https://www.aia.co.th/en/health-wellness/vitality/campaigns/virgin-active-mar26",
     ]
 
     for url in TARGET_SITES:
